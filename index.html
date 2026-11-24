@@ -121,6 +121,7 @@ textarea { min-height: 72px; padding: 8px 10px; resize: vertical; }
 .cell.c-amt, .cell.c-profit { font-weight: 700; }
 .cell.neg-v { color: var(--danger); }
 .cell.c-client { font-weight: 700; }
+.cell.c-desc { white-space: pre-line; }
 .cell.none-v { color: var(--muted); font-weight: 400; }
 .cell.c-extra::before { content: none; }
 .chips { display: flex; flex-wrap: wrap; gap: 2px 14px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
@@ -242,7 +243,7 @@ textarea { min-height: 72px; padding: 8px 10px; resize: vertical; }
       <label>고객명<input type="text" id="fClient" list="dlClient"></label>
       <label>적용금시세(원)<input type="text" id="fRate" inputmode="numeric" placeholder="0"></label>
       <label>함량<select id="fPurity2"></select></label>
-      <label class="full">내역<input type="text" id="fDesc" placeholder="예: 순금 반지 3.75g"></label>
+      <label class="full">내역<textarea id="fDesc" rows="3" placeholder="예: 순금 반지 3.75g&#10;(Enter를 누르면 줄이 바뀌어요)"></textarea></label>
       <div class="fld full">제품사진
         <div class="photo">
           <div class="pv" id="pv">사진 없음</div>
