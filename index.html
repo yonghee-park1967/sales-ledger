@@ -118,9 +118,8 @@ textarea { min-height: 72px; padding: 8px 10px; resize: vertical; }
 .cell { grid-column: 2 / 4; min-width: 0; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
 .cell::before { content: attr(data-l); display: inline-block; min-width: 4.8em; margin-right: 8px; font-size: 12px; font-weight: 400; color: var(--muted); }
 .cell.c-date { white-space: nowrap; }
-.cell.c-amt { order: 1; font-weight: 700; }
-.cell.c-client, .cell.c-desc, .cell.c-note { order: 2; }
-.cell.c-extra { order: 3; }
+.cell.c-amt, .cell.c-profit { font-weight: 700; }
+.cell.neg-v { color: var(--danger); }
 .cell.c-client { font-weight: 700; }
 .cell.none-v { color: var(--muted); font-weight: 400; }
 .cell.c-extra::before { content: none; }
@@ -128,12 +127,12 @@ textarea { min-height: 72px; padding: 8px 10px; resize: vertical; }
 .chips b { color: var(--fg); font-weight: 500; margin-left: 4px; }
 .chips .neg b { color: var(--danger); }
 @media (min-width: 760px) {
-  .lhead, .row { grid-template-columns: 56px 156px minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1.2fr) 150px; gap: 8px 0; }
+  .lhead, .row { grid-template-columns: 56px 156px minmax(0, 1fr) minmax(0, 1.6fr) 150px 150px; gap: 8px 0; }
   .lhead { display: grid; padding: 8px 14px; background: var(--surface2); color: var(--muted); font-size: 12px; font-weight: 700; border-bottom: 1px solid var(--line); }
   .lhead > div { padding: 0 12px; }
   .lhead > div:first-child { padding-left: 0; }
-  .lhead > div:nth-child(n+3), .row .cell.c-client, .row .cell.c-desc, .row .cell.c-note, .row .cell.c-amt { border-left: 1px solid var(--line); }
-  .lhead > div:last-child, .cell.c-amt { text-align: right; }
+  .lhead > div:nth-child(n+3), .row .cell.c-client, .row .cell.c-desc, .row .cell.c-amt, .row .cell.c-profit { border-left: 1px solid var(--line); }
+  .lhead > div:nth-child(n+5), .cell.c-amt, .cell.c-profit { text-align: right; }
   .row { align-items: stretch; }
   .thumb { grid-row: 1 / span 2; align-self: start; }
   .cell { grid-row: 1; padding: 0 12px; }
@@ -141,8 +140,8 @@ textarea { min-height: 72px; padding: 8px 10px; resize: vertical; }
   .cell.c-date { grid-column: 2; padding-left: 12px; white-space: nowrap; }
   .cell.c-client { grid-column: 3; }
   .cell.c-desc { grid-column: 4; }
-  .cell.c-note { grid-column: 5; }
-  .cell.c-amt { grid-column: 6; }
+  .cell.c-amt { grid-column: 5; }
+  .cell.c-profit { grid-column: 6; }
   .cell.c-extra { grid-column: 2 / -1; grid-row: 2; padding-left: 12px; }
 }
 .foot { display: flex; flex-wrap: wrap; gap: 4px 20px; padding: 12px 14px; background: var(--surface2); border-top: 1px solid var(--line); font-weight: 700; font-variant-numeric: tabular-nums; }
@@ -493,7 +492,7 @@ textarea { min-height: 72px; padding: 8px 10px; resize: vertical; }
     if (!list.length) { box.appendChild(h('div', 'empty', '조건에 맞는 내역이 없어요.')); return; }
     var T = { sales: 0, profit: 0, cost: 0, buy: 0, buyProfit: 0 };
     var lh = h('div', 'lhead'); lh.setAttribute('aria-hidden', 'true');
-    ['사진', '날짜', '고객명', '내역', '특이사항', '매출액'].forEach(function (t) { lh.appendChild(h('div', '', t)); });
+    ['사진', '날짜', '고객명', '내역', '매출액', '매출이익'].forEach(function (t) { lh.appendChild(h('div', '', t)); });
     box.appendChild(lh);
     list.forEach(function (r) {
       T.sales += r.sales; T.profit += r.profit; T.cost += r.cost; T.buy += r.buy; T.buyProfit += r.buyProfit;
@@ -511,17 +510,18 @@ textarea { min-height: 72px; padding: 8px 10px; resize: vertical; }
       var cDate = mkCell('c-date' + (di === 0 ? ' dow-sun' : di === 6 ? ' dow-sat' : ''), '날짜', r.date ? r.date + (di < 0 ? '' : ' (' + DOW[di] + ')') : '');
       var cClient = mkCell('c-client', '고객명', r.client);
       var cDesc = mkCell('c-desc', '내역', r.desc);
-      var cNote = mkCell('c-note', '특이사항', r.note);
       var cAmt = mkCell('c-amt', '매출액', won(r.sales));
+      var cProfit = mkCell('c-profit', '매출이익', won(r.profit));
+      if (r.profit < 0) cProfit.className += ' neg-v';
       var extra = h('div', 'cell c-extra chips');
       if (r.purity) extra.appendChild(tchip('함량', r.purity));
       if (r.rate) extra.appendChild(tchip('적용금시세', won(r.rate)));
       if (r.method) extra.appendChild(tchip('결제', r.method));
-      if (r.profit) extra.appendChild(chip('매출이익', r.profit));
       if (r.cost) extra.appendChild(chip('비용', r.cost));
       if (r.buy) extra.appendChild(chip('고금매입액', r.buy));
       if (r.buyProfit) extra.appendChild(chip('고금매입이익', r.buyProfit));
-      [th, cDate, cClient, cDesc, cNote, cAmt].forEach(function (e) { row.appendChild(e); });
+      if (r.note) extra.appendChild(tchip('특이사항', r.note));
+      [th, cDate, cClient, cDesc, cAmt, cProfit].forEach(function (e) { row.appendChild(e); });
       if (extra.childNodes.length) row.appendChild(extra);
       row.addEventListener('click', function () { openForm(r.id); });
       row.addEventListener('keydown', function (ev) { if ((ev.key === 'Enter' || ev.key === ' ') && ev.target === row) { ev.preventDefault(); openForm(r.id); } });
@@ -695,7 +695,7 @@ textarea { min-height: 72px; padding: 8px 10px; resize: vertical; }
     var u = URL.createObjectURL(blob), a = document.createElement('a');
     a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(function () { URL.revokeObjectURL(u); }, 5000);
-    toast('저장했어요. 다운로드 폴더를 확인해 보세요.');
+    toast('저장했어요. 저장 위치는 크롬의 다운로드 설정을 따라요.');
   }
 
   function exportXlsx() {
