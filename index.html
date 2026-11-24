@@ -80,7 +80,7 @@ h2 { margin: 0; font-size: 16px; font-weight: 700; }
 .stat .v { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .neg { color: var(--danger); }
 .tscroll { overflow: auto; max-height: 340px; }
-table.mt { width: 100%; min-width: 560px; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+table.mt { width: 100%; min-width: 700px; border-collapse: collapse; font-variant-numeric: tabular-nums; }
 .mt th, .mt td { padding: 9px 10px; text-align: right; border-top: 1px solid var(--line); white-space: nowrap; }
 .mt thead th { border-top: 0; color: var(--muted); font-size: 12px; font-weight: 700; position: sticky; top: 0; background: var(--surface); }
 .mt th:first-child, .mt td:first-child { text-align: left; }
@@ -105,27 +105,46 @@ textarea { min-height: 72px; padding: 8px 10px; resize: vertical; }
 .xbtn { font: inherit; width: 28px; height: 28px; border-radius: 50%; border: 0; background: var(--line); color: var(--fg); cursor: pointer; line-height: 1; }
 
 .list { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
-.row { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border-top: 1px solid var(--line); cursor: pointer; }
-.row:first-child { border-top: 0; }
+.lhead { display: none; }
+.row { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 6px 12px; align-items: start; padding: 12px 14px; border-top: 1px solid var(--line); cursor: pointer; }
+.lhead + .row { border-top: 0; }
 .row:hover { background: var(--surface2); }
 .thumb {
-  flex: 0 0 56px; width: 56px; height: 56px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface2);
+  grid-column: 1; grid-row: 1 / span 6; width: 56px; height: 56px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface2);
   overflow: hidden; padding: 0; display: grid; place-items: center; font: inherit; font-size: 10px; line-height: 1.2; color: var(--muted); cursor: zoom-in; text-align: center;
 }
 .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .thumb.none { border-style: dashed; cursor: inherit; }
-.main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-.l1 { display: flex; flex-wrap: wrap; gap: 2px 8px; align-items: baseline; }
-.date { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
-.client { font-weight: 700; overflow-wrap: anywhere; }
-.pill { font-size: 11px; font-weight: 700; padding: 1px 8px; border-radius: 99px; background: var(--surface2); border: 1px solid var(--line); }
-.desc { overflow-wrap: anywhere; }
+.cell { grid-column: 2 / 4; min-width: 0; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.cell::before { content: attr(data-l); display: inline-block; min-width: 4.8em; margin-right: 8px; font-size: 12px; font-weight: 400; color: var(--muted); }
+.cell.c-date { white-space: nowrap; }
+.cell.c-amt { order: 1; font-weight: 700; }
+.cell.c-client, .cell.c-desc, .cell.c-note { order: 2; }
+.cell.c-extra { order: 3; }
+.cell.c-client { font-weight: 700; }
+.cell.none-v { color: var(--muted); font-weight: 400; }
+.cell.c-extra::before { content: none; }
 .chips { display: flex; flex-wrap: wrap; gap: 2px 14px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .chips b { color: var(--fg); font-weight: 500; margin-left: 4px; }
 .chips .neg b { color: var(--danger); }
-.meta { font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
-.amt { flex: 0 0 auto; max-width: 42%; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
-.amt small { display: block; font-size: 11px; font-weight: 400; color: var(--muted); }
+@media (min-width: 760px) {
+  .lhead, .row { grid-template-columns: 56px 156px minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1.2fr) 150px; gap: 8px 0; }
+  .lhead { display: grid; padding: 8px 14px; background: var(--surface2); color: var(--muted); font-size: 12px; font-weight: 700; border-bottom: 1px solid var(--line); }
+  .lhead > div { padding: 0 12px; }
+  .lhead > div:first-child { padding-left: 0; }
+  .lhead > div:nth-child(n+3), .row .cell.c-client, .row .cell.c-desc, .row .cell.c-note, .row .cell.c-amt { border-left: 1px solid var(--line); }
+  .lhead > div:last-child, .cell.c-amt { text-align: right; }
+  .row { align-items: stretch; }
+  .thumb { grid-row: 1 / span 2; align-self: start; }
+  .cell { grid-row: 1; padding: 0 12px; }
+  .cell::before { content: none; }
+  .cell.c-date { grid-column: 2; padding-left: 12px; white-space: nowrap; }
+  .cell.c-client { grid-column: 3; }
+  .cell.c-desc { grid-column: 4; }
+  .cell.c-note { grid-column: 5; }
+  .cell.c-amt { grid-column: 6; }
+  .cell.c-extra { grid-column: 2 / -1; grid-row: 2; padding-left: 12px; }
+}
 .foot { display: flex; flex-wrap: wrap; gap: 4px 20px; padding: 12px 14px; background: var(--surface2); border-top: 1px solid var(--line); font-weight: 700; font-variant-numeric: tabular-nums; }
 .foot span { white-space: nowrap; }
 .empty { padding: 36px 16px; text-align: center; display: flex; flex-direction: column; gap: 12px; align-items: center; }
@@ -262,7 +281,7 @@ textarea { min-height: 72px; padding: 8px 10px; resize: vertical; }
 (function () {
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
-  var PURITIES = ['24k', '18k', '14k', '은', 'PT', '기타'];
+  var PURITIES = ['24k', '18k', '14k', '골드바', '은', 'PT', '기타'];
   var LS_KEY = 'gold-ledger-v1';
   var COLL = 'gold-ledger';
   var MONEY = ['fRate', 'fSales', 'fProfit', 'fCost', 'fBuy', 'fBuyProfit'];
@@ -311,8 +330,8 @@ textarea { min-height: 72px; padding: 8px 10px; resize: vertical; }
     var m = {};
     rows.forEach(function (r) {
       var k = pkey(r.date, type); if (!k) return;
-      var o = m[k] || (m[k] = { k: k, n: 0, sales: 0, profit: 0, buy: 0, buyProfit: 0 });
-      o.n++; o.sales += r.sales; o.profit += r.profit; o.buy += r.buy; o.buyProfit += r.buyProfit;
+      var o = m[k] || (m[k] = { k: k, n: 0, sales: 0, profit: 0, cost: 0, buy: 0, buyProfit: 0 });
+      o.n++; o.sales += r.sales; o.profit += r.profit; o.cost += r.cost; o.buy += r.buy; o.buyProfit += r.buyProfit;
     });
     return Object.keys(m).sort().reverse().map(function (k) { return m[k]; });
   }
@@ -399,32 +418,32 @@ textarea { min-height: 72px; padding: 8px 10px; resize: vertical; }
     Array.prototype.forEach.call($('seg').querySelectorAll('button'), function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-v') === type ? 'true' : 'false'); });
     var data = periodsData(type);
     var curKey = pkey(todayStr(), type);
-    var cur = data.filter(function (p) { return p.k === curKey; })[0] || { n: 0, sales: 0, profit: 0, buy: 0, buyProfit: 0 };
+    var cur = data.filter(function (p) { return p.k === curKey; })[0] || { n: 0, sales: 0, profit: 0, cost: 0, buy: 0, buyProfit: 0 };
     $('curLabel').textContent = plabel(curKey, type) + ' 합계 · ' + cur.n + '건';
     var tiles = $('tiles'); tiles.textContent = '';
-    [['매출액', cur.sales], ['매출이익', cur.profit], ['고금매입액', cur.buy], ['고금매입이익', cur.buyProfit]].forEach(function (t) {
+    [['매출액', cur.sales], ['매출이익', cur.profit], ['비용', cur.cost], ['고금매입액', cur.buy], ['고금매입이익', cur.buyProfit]].forEach(function (t) {
       var d = h('div', 'stat'); d.appendChild(h('div', 'l', t[0])); d.appendChild(h('div', 'v' + (t[1] < 0 ? ' neg' : ''), won(t[1]))); tiles.appendChild(d);
     });
     var box = $('tableBox'); box.textContent = '';
     if (!data.length) { box.appendChild(h('p', 'muted', '내역이 쌓이면 기간별 합계가 여기에 나와요.')); return; }
     var t = h('table', 'mt'), thead = h('thead'), tr = h('tr');
-    ['기간', '건수', '매출액', '매출이익', '고금매입액', '고금매입이익'].forEach(function (x) { tr.appendChild(h('th', '', x)); });
+    ['기간', '건수', '매출액', '매출이익', '비용', '고금매입액', '고금매입이익'].forEach(function (x) { tr.appendChild(h('th', '', x)); });
     thead.appendChild(tr); t.appendChild(thead);
-    var tb = h('tbody'), T = { n: 0, sales: 0, profit: 0, buy: 0, buyProfit: 0 };
+    var tb = h('tbody'), T = { n: 0, sales: 0, profit: 0, cost: 0, buy: 0, buyProfit: 0 };
     data.forEach(function (p) {
       var r = h('tr'), td = h('td');
       var b = h('button', 'mlink', plabel(p.k, type)); b.type = 'button'; b.title = '이 기간 내역만 보기';
       b.addEventListener('click', function () { state.period = { type: type, key: p.k }; renderFilters(); renderList(); $('list').scrollIntoView({ block: 'start' }); });
       td.appendChild(b); r.appendChild(td);
       r.appendChild(h('td', '', String(p.n)));
-      [p.sales, p.profit, p.buy, p.buyProfit].forEach(function (v) { r.appendChild(h('td', v < 0 ? 'neg' : '', won(v))); });
+      [p.sales, p.profit, p.cost, p.buy, p.buyProfit].forEach(function (v) { r.appendChild(h('td', v < 0 ? 'neg' : '', won(v))); });
       tb.appendChild(r);
-      T.n += p.n; T.sales += p.sales; T.profit += p.profit; T.buy += p.buy; T.buyProfit += p.buyProfit;
+      T.n += p.n; T.sales += p.sales; T.profit += p.profit; T.cost += p.cost; T.buy += p.buy; T.buyProfit += p.buyProfit;
     });
     t.appendChild(tb);
     var tf = h('tfoot'), fr = h('tr');
     fr.appendChild(h('td', '', '전체 합계')); fr.appendChild(h('td', '', String(T.n)));
-    [T.sales, T.profit, T.buy, T.buyProfit].forEach(function (v) { fr.appendChild(h('td', v < 0 ? 'neg' : '', won(v))); });
+    [T.sales, T.profit, T.cost, T.buy, T.buyProfit].forEach(function (v) { fr.appendChild(h('td', v < 0 ? 'neg' : '', won(v))); });
     tf.appendChild(fr); t.appendChild(tf); box.appendChild(t);
   }
 
@@ -446,6 +465,14 @@ textarea { min-height: 72px; padding: 8px 10px; resize: vertical; }
     }
   }
 
+  function tchip(label, text) {
+    var s = h('span', ''); s.appendChild(document.createTextNode(label)); s.appendChild(h('b', '', text)); return s;
+  }
+  function mkCell(cls, label, text) {
+    var c = h('div', 'cell ' + cls); c.setAttribute('data-l', label);
+    if (text) c.textContent = text; else { c.textContent = '—'; c.className += ' none-v'; }
+    return c;
+  }
   function chip(label, v) {
     var s = h('span', v < 0 ? 'neg' : ''); s.appendChild(document.createTextNode(label)); s.appendChild(h('b', '', won(v))); return s;
   }
@@ -465,6 +492,9 @@ textarea { min-height: 72px; padding: 8px 10px; resize: vertical; }
     var list = filtered();
     if (!list.length) { box.appendChild(h('div', 'empty', '조건에 맞는 내역이 없어요.')); return; }
     var T = { sales: 0, profit: 0, cost: 0, buy: 0, buyProfit: 0 };
+    var lh = h('div', 'lhead'); lh.setAttribute('aria-hidden', 'true');
+    ['사진', '날짜', '고객명', '내역', '특이사항', '매출액'].forEach(function (t) { lh.appendChild(h('div', '', t)); });
+    box.appendChild(lh);
     list.forEach(function (r) {
       T.sales += r.sales; T.profit += r.profit; T.cost += r.cost; T.buy += r.buy; T.buyProfit += r.buyProfit;
       var row = h('div', 'row'); row.tabIndex = 0; row.setAttribute('role', 'button');
@@ -477,26 +507,22 @@ textarea { min-height: 72px; padding: 8px 10px; resize: vertical; }
         th.appendChild(im);
         th.addEventListener('click', function (ev) { ev.stopPropagation(); openLb(src); });
       } else { th = h('div', 'thumb none', '사진 없음'); }
-      var main = h('div', 'main'), l1 = h('div', 'l1');
       var di = dowIdx(r.date);
-      l1.appendChild(h('span', 'date' + (di === 0 ? ' dow-sun' : di === 6 ? ' dow-sat' : ''), r.date + (di < 0 ? '' : ' (' + DOW[di] + ')')));
-      l1.appendChild(h('span', 'client', r.client || '(고객명 없음)'));
-      if (r.purity) l1.appendChild(h('span', 'pill', r.purity));
-      main.appendChild(l1);
-      if (r.desc) main.appendChild(h('div', 'desc', r.desc));
-      var chips = h('div', 'chips');
-      if (r.profit) chips.appendChild(chip('매출이익', r.profit));
-      if (r.cost) chips.appendChild(chip('비용', r.cost));
-      if (r.buy) chips.appendChild(chip('고금매입액', r.buy));
-      if (r.buyProfit) chips.appendChild(chip('고금매입이익', r.buyProfit));
-      if (chips.childNodes.length) main.appendChild(chips);
-      var meta = [];
-      if (r.rate) meta.push('적용금시세 ' + won(r.rate));
-      if (r.method) meta.push('결제 ' + r.method);
-      if (r.note) meta.push(r.note);
-      if (meta.length) main.appendChild(h('div', 'meta', meta.join(' · ')));
-      var amt = h('div', 'amt'); amt.appendChild(h('small', '', '매출액')); amt.appendChild(document.createTextNode(won(r.sales)));
-      row.appendChild(th); row.appendChild(main); row.appendChild(amt);
+      var cDate = mkCell('c-date' + (di === 0 ? ' dow-sun' : di === 6 ? ' dow-sat' : ''), '날짜', r.date ? r.date + (di < 0 ? '' : ' (' + DOW[di] + ')') : '');
+      var cClient = mkCell('c-client', '고객명', r.client);
+      var cDesc = mkCell('c-desc', '내역', r.desc);
+      var cNote = mkCell('c-note', '특이사항', r.note);
+      var cAmt = mkCell('c-amt', '매출액', won(r.sales));
+      var extra = h('div', 'cell c-extra chips');
+      if (r.purity) extra.appendChild(tchip('함량', r.purity));
+      if (r.rate) extra.appendChild(tchip('적용금시세', won(r.rate)));
+      if (r.method) extra.appendChild(tchip('결제', r.method));
+      if (r.profit) extra.appendChild(chip('매출이익', r.profit));
+      if (r.cost) extra.appendChild(chip('비용', r.cost));
+      if (r.buy) extra.appendChild(chip('고금매입액', r.buy));
+      if (r.buyProfit) extra.appendChild(chip('고금매입이익', r.buyProfit));
+      [th, cDate, cClient, cDesc, cNote, cAmt].forEach(function (e) { row.appendChild(e); });
+      if (extra.childNodes.length) row.appendChild(extra);
       row.addEventListener('click', function () { openForm(r.id); });
       row.addEventListener('keydown', function (ev) { if ((ev.key === 'Enter' || ev.key === ' ') && ev.target === row) { ev.preventDefault(); openForm(r.id); } });
       box.appendChild(row);
@@ -688,17 +714,17 @@ textarea { min-height: 72px; padding: 8px 10px; resize: vertical; }
     XLSX.utils.book_append_sheet(wb, ws, '매출장부');
     [['month', '월별합계'], ['quarter', '분기별합계'], ['half', '반기별합계'], ['year', '연별합계']].forEach(function (t) {
       var ps2 = periodsData(t[0]).slice().reverse();
-      var a2 = [['기간', '건수', '매출액(원)', '매출이익(원)', '고금매입액(원)', '고금매입이익(원)']];
-      ps2.forEach(function (p) { a2.push([plabel(p.k, t[0]), p.n, p.sales, p.profit, p.buy, p.buyProfit]); });
-      a2.push(['전체 합계', 0, 0, 0, 0, 0]);
+      var a2 = [['기간', '건수', '매출액(원)', '매출이익(원)', '비용(원)', '고금매입액(원)', '고금매입이익(원)']];
+      ps2.forEach(function (p) { a2.push([plabel(p.k, t[0]), p.n, p.sales, p.profit, p.cost, p.buy, p.buyProfit]); });
+      a2.push(['전체 합계', 0, 0, 0, 0, 0, 0]);
       var w2 = XLSX.utils.aoa_to_sheet(a2), last = ps2.length + 1;
-      var keys = { B: 'n', C: 'sales', D: 'profit', E: 'buy', F: 'buyProfit' };
+      var keys = { B: 'n', C: 'sales', D: 'profit', E: 'cost', F: 'buy', G: 'buyProfit' };
       Object.keys(keys).forEach(function (c) {
         var tot = 0; ps2.forEach(function (p) { tot += p[keys[c]]; });
         if (ps2.length) w2[c + (last + 1)] = { t: 'n', f: 'SUM(' + c + '2:' + c + last + ')', v: tot, z: c === 'B' ? '0' : '#,##0' };
         for (var i = 2; i <= last; i++) if (w2[c + i]) w2[c + i].z = c === 'B' ? '0' : '#,##0';
       });
-      w2['!cols'] = [{ wch: 16 }, { wch: 8 }, { wch: 16 }, { wch: 16 }, { wch: 16 }, { wch: 18 }];
+      w2['!cols'] = [{ wch: 16 }, { wch: 8 }, { wch: 16 }, { wch: 16 }, { wch: 14 }, { wch: 16 }, { wch: 18 }];
       XLSX.utils.book_append_sheet(wb, w2, t[1]);
     });
     var out = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
